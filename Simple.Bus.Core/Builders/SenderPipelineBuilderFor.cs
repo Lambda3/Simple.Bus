@@ -26,12 +26,12 @@ namespace Simple.Bus.Core.Builders
             return this;
         }
 
-        public SenderPipelineBuilderFor<T> UseSender(Func<ILogger, ISenderFor<T>> sender)
+        public SenderPipelineBuilderFor<T> WithSender(Func<ILogger, ISenderFor<T>> sender)
         {
             this.sender = sender;
             return this;
         }
-        public SenderPipelineBuilderFor<T> UseLogger(ILogger logger)
+        public SenderPipelineBuilderFor<T> WithLogger(ILogger logger)
         {
             this.logger = logger;
             return this;
@@ -46,7 +46,7 @@ namespace Simple.Bus.Core.Builders
                 WithCriptographer(new CryptographyDefault());
 
             if (logger == null)
-                UseLogger(Loggers.LoggerFactory.CreateLogger<T>());
+                WithLogger(Loggers.LoggerFactory.CreateLogger<T>());
 
             if (sender == null)
                 throw new ArgumentNullException(nameof(sender), "Sender transport must be especified.");

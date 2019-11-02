@@ -29,7 +29,7 @@ namespace Simple.Bus.Sample.Producer.RabbitMQ
             var credentials = new CredentialsRabbitMQ(hostName, port, userName, password);
             var exchange = "exchange-message";
 
-            var sender = new SenderPipelineBuilderFor<MessageForProducer>().UseRabbitMq(credentials, exchange).Build();
+            var sender = new SenderPipelineBuilderFor<MessageForProducer>().WithRabbitMq(credentials, exchange).Build();
 
             do
             {

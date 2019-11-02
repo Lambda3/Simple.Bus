@@ -7,7 +7,7 @@ using Simple.Bus.Core.Receivers;
 
 namespace Simple.Bus.Sample.Receiver
 {
-    public class WorkerRabbitMQ : IHostedService
+    public class WorkerRabbitMQ : BackgroundService
     {
         private readonly ILogger<WorkerRabbitMQ> logger;
         private readonly IReceiverFor<MessageContractRMQ> handleReceiver;
@@ -18,16 +18,31 @@ namespace Simple.Bus.Sample.Receiver
             this.handleReceiver = handleReceiver;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
             logger.LogInformation($"Start listening bus at {DateTimeOffset.Now}");
-            return handleReceiver.StartAsync(cancellationToken);
+            await handleReceiver.StartAsync(cancellationToken);
+            await base.StartAsync(cancellationToken);
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
             logger.LogInformation($"Stop listening bus at {DateTimeOffset.Now}");
-            return handleReceiver.StopAsync(cancellationToken);
+            await handleReceiver.StopAsync(cancellationToken);
+            await base.StopAsync(cancellationToken);
+        }
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var message = handleReceiver.IsConnected() ? $"Alive at" : "Not alive at";
+                logger.LogInformation($"RabbitMQ. {message} {DateTimeOffset.Now}");
+
+                Thread.Sleep(5000);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -26,5 +26,7 @@ namespace Simple.Bus.Core.Receivers
         public abstract Task StartAsync(CancellationToken cancellationToken);
 
         public abstract Task StopAsync(CancellationToken cancellationToken);
+
+        public abstract bool IsConnected();
     }
 }

@@ -27,8 +27,8 @@ namespace Simple.Bus.Receiver.DeadLetter
 
                     services
                         .AddBusReceiverFor<MessageErrorContract>(builder => builder
-                                .UseMessageHandler(new ConsumerMessageError().Consume)
-                                .UseAzureServiceBus(handlerConfiguration));
+                                .WithMessageHandler(new ConsumerMessageError().Consume)
+                                .WithAzureServiceBus(handlerConfiguration));
 
                     services.AddHostedService<Worker>();
                 });

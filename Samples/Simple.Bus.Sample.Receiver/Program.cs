@@ -38,9 +38,9 @@ namespace Simple.Bus.Sample.Receiver
 
                     services
                         .AddBusReceiverFor<MessageContractASB>(builder => builder
-                            .UseMessageHandler(new ConsumerMessage(logger).Consume)
-                            .UseLogger(logger)
-                            .UseAzureServiceBus(handlerConfigurationAzureServiceBus));
+                            .WithMessageHandler(new ConsumerMessage(logger).Consume)
+                            .WithLogger(logger)
+                            .WithAzureServiceBus(handlerConfigurationAzureServiceBus));
 
                     services.AddHostedService<WorkerAzureServiceBus>();
 
@@ -56,12 +56,12 @@ namespace Simple.Bus.Sample.Receiver
                     var handlerConfigurationRabbitMQ = new ReceiverConfigurationRabbitMQ(credentials, exchange, queue);
                     services
                         .AddBusReceiverFor<MessageContractRMQ>(builder => builder
-                            .UseMessageHandler((message) =>
+                            .WithMessageHandler((message) =>
                             {
                                 Console.WriteLine($"Receive message for rabbit mq: {message.Nome}");
                                 return Task.CompletedTask;
                             })
-                            .UseRabbitMQ(handlerConfigurationRabbitMQ));
+                            .WithRabbitMQ(handlerConfigurationRabbitMQ));
 
                     services.AddHostedService<WorkerRabbitMQ>();
                 });

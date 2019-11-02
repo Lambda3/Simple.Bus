@@ -51,5 +51,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
             connection.Dispose();
             return Task.CompletedTask;
         }
+
+        public override bool IsConnected() => connection.IsOpen;
     }
 }

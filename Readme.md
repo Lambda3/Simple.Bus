@@ -15,13 +15,13 @@ You should use the class ReceiverConfigurationAzureServiceBus to configure servi
 ```c#
 services
 	.AddBusReceiverFor<YourMessage>(builder => builder
-		.UseMessageHandler((message) => 
+		.WithMessageHandler((message) => 
 		{
 			Console.WriteLine($"Message received {message}");
 			return Task.Completed;
 		})
-		.UseLogger(logger)
-		.UseAzureServiceBus(receiverConfigurationAzureServiceBus));
+		.WithLogger(logger)
+		.WithAzureServiceBus(receiverConfigurationAzureServiceBus));
 ```
 - RabbitMQ
 
@@ -30,15 +30,19 @@ You should use the class ReceiverConfigurationRabbitMQ to configure rabbitMQ.
 ```c#
 services
 	.AddBusReceiverFor<YourMessage>(builder => builder
-   		.UseMessageHandler((message) =>
+   		.WithMessageHandler((message) =>
    		{
    			Console.WriteLine($"Receive message for rabbit mq: {message.Nome}");
    			return Task.CompletedTask;
    		})
-   		.UseRabbitMQ(handlerConfigurationRabbitMQ));
+   		.WithRabbitMQ(handlerConfigurationRabbitMQ));
 ```
 
-After that, you can inject ```ReceiverBuilderFor<T>```
+After that, you can inject ```ReceiverBuilderFor<YourMessage>```
+
+You must call Start for ```IReceiverFor<YourMessage>``` to start listening
+
+You must call Stop for ```IReceiverFor<YourMessage>``` to stop listening
 
 ### Send
 
@@ -46,21 +50,21 @@ After that, you can inject ```ReceiverBuilderFor<T>```
 - RabbitMQ
 			
 ```c#
-var sender = new SenderPipelineBuilderFor<YourMessage>().UseRabbitMq(credentials, exchange).Build();
+var sender = new SenderPipelineBuilderFor<YourMessage>().WithRabbitMq(credentials, exchange).Build();
 
 ```
 
 - Azure Service Bus
 
 ```c#
-var sender = new SenderPipelineBuilderFor<YourMessage>().UseAzureServiceBus(connectionString, topicName).Build();
+var sender = new SenderPipelineBuilderFor<YourMessage>().WithAzureServiceBus(connectionString, topicName).Build();
 
 ```
 
 or
  
 ```c#
-services.AddBusSenderFor<YourMessage>(builder => builder.UseAzureServiceBus(connectionString, topicName));
+services.AddBusSenderFor<YourMessage>(builder => builder.WithAzureServiceBus(connectionString, topicName));
 
 ```
 

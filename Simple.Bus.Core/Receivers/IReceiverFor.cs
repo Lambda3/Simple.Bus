@@ -7,5 +7,6 @@ namespace Simple.Bus.Core.Receivers
     {
         Task StartAsync(CancellationToken cancellationToken);
         Task StopAsync(CancellationToken cancellationToken);
+        bool IsConnected();
     }
 }

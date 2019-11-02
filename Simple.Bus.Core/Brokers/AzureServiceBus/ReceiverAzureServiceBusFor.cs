@@ -1,8 +1,10 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Microsoft.Azure.Amqp;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 using Simple.Bus.Core.Receivers;
 using Simple.Bus.Core.Receivers.Pipelines;
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +22,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
                 PrefetchCount = 10,
                 OperationTimeout = TimeSpan.FromMinutes(1)
             };
+
             this.receiverConfiguration = receiverConfiguration;
         }
 
@@ -33,6 +36,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             };
 
             subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+
             return Task.CompletedTask;
         }
 
@@ -67,6 +71,24 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             {
                 logger.LogInformation("Message completed manually");
                 return subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
+            }
+        }
+
+        public override bool IsConnected()
+        {
+            var connectionManager = (FaultTolerantAmqpObject<AmqpConnection>)typeof(ServiceBusConnection)
+                .GetProperty("ConnectionManager", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetMethod
+                .Invoke(subscriptionClient.ServiceBusConnection, null);
+
+            try
+            {
+                return connectionManager.TryGetOpenedObject(out _);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error while checking connection");
+                return false;
             }
         }
     }

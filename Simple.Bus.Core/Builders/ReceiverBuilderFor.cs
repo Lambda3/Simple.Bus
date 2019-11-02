@@ -35,24 +35,24 @@ namespace Simple.Bus.Core.Builders
             return this;
         }
 
-        public ReceiverBuilderFor<T> UseMessageHandler(Func<T, Task> handlerMessageFunction)
+        public ReceiverBuilderFor<T> WithMessageHandler(Func<T, Task> handlerMessageFunction)
         {
             this.handlerMessageFunction = handlerMessageFunction;
             return this;
         }
-        public ReceiverBuilderFor<T> UseMessageHandler(IConsumerFor<T> consumer)
+        public ReceiverBuilderFor<T> WithMessageHandler(IConsumerFor<T> consumer)
         {
             handlerMessageFunction = consumer.Consume;
             return this;
         }
 
-        public ReceiverBuilderFor<T> UseReceiver(Func<IPipelineReceiverFor<T>, ILogger, IReceiverFor<T>> receiver)
+        public ReceiverBuilderFor<T> WithReceiver(Func<IPipelineReceiverFor<T>, ILogger, IReceiverFor<T>> receiver)
         {
             this.receiver = receiver;
             return this;
         }
 
-        public ReceiverBuilderFor<T> UseLogger(ILogger logger)
+        public ReceiverBuilderFor<T> WithLogger(ILogger logger)
         {
             this.logger = logger;
             return this;
@@ -67,7 +67,7 @@ namespace Simple.Bus.Core.Builders
                 WithCriptographer(new CryptographyDefault());
 
             if (logger == null)
-                UseLogger(Loggers.LoggerFactory.CreateLogger<T>());
+                WithLogger(Loggers.LoggerFactory.CreateLogger<T>());
 
             if (pipeline == null)
                 WithPipeline(new PipelineReceiverFor<T>(handlerMessageFunction, serializer, cryptography, logger));

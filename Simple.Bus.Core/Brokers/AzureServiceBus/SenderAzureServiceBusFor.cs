@@ -13,7 +13,10 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
 
         public SenderAzureServiceBusFor(string connectionString, string topic, ILogger logger)
         {
-            topicClient = new TopicClient(connectionString, topic);
+            topicClient = new TopicClient(connectionString, topic)
+            {
+                OperationTimeout = TimeSpan.FromSeconds(20)
+            };
             this.logger = logger;
         }
 

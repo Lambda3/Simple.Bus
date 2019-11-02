@@ -17,7 +17,7 @@ namespace Simple.Bus.Sample.Producer.AzureServiceBus
             var connectionString = "";
             var topicName = "topic-message";
 
-            var sender = new SenderPipelineBuilderFor<MessageForProducer>().UseAzureServiceBus(connectionString, topicName).Build();
+            var sender = new SenderPipelineBuilderFor<MessageForProducer>().WithAzureServiceBus(connectionString, topicName).Build();
 
             do
             {
