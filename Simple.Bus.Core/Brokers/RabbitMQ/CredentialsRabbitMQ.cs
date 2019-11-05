@@ -2,7 +2,7 @@
 
 namespace Simple.Bus.Core.Brokers.RabbitMQ
 {
-    public class CredentialsRabbitMQ
+    public class CredentialsRabbitMQ : ICredentials<ConnectionFactory>
     {
         private readonly ConnectionFactory factory;
 

@@ -3,25 +3,23 @@ using Simple.Bus.Core.Receivers;
 
 namespace Simple.Bus.Core.Brokers.RabbitMQ
 {
-    public class ReceiverConfigurationRabbitMQ : ReceiverConfiguration
+    public class ReceiverConfigurationRabbitMQ<T> : ReceiverConfiguration<T>
     {
-        public CredentialsRabbitMQ Credentials { get; }
         public QueueConfigurationRabbitMQ Queue { get; }
         public string Exchange { get; }
         public string TypeForExchange { get; }
 
         private const bool AutoCompleteDefault = false;
 
-        public ReceiverConfigurationRabbitMQ(CredentialsRabbitMQ credentials, string exchange, string queue)
-            : this(credentials, exchange, ExchangeType.Fanout, AutoCompleteDefault, new QueueConfigurationRabbitMQ(queue))
+        public ReceiverConfigurationRabbitMQ(string exchange, string queue)
+            : this(exchange, ExchangeType.Fanout, AutoCompleteDefault, new QueueConfigurationRabbitMQ(queue))
         {
         }
 
-        public ReceiverConfigurationRabbitMQ(CredentialsRabbitMQ credentials, string exchange, string exchangeType, bool autoComplete, QueueConfigurationRabbitMQ queue)
+        public ReceiverConfigurationRabbitMQ( string exchange, string exchangeType, bool autoComplete, QueueConfigurationRabbitMQ queue)
             : base(autoComplete)
         {
 
-            Credentials = credentials;
             Exchange = exchange;
             TypeForExchange = exchangeType;
             Queue = queue;

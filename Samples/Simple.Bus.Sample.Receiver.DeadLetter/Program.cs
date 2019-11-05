@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Simple.Bus.Core.Brokers.AzureServiceBus;
-using Simple.Bus.Core.Brokers.AzureServiceBus.Builders;
 using Simple.Bus.Core.Builders.DotNetCore;
 
 namespace Simple.Bus.Receiver.DeadLetter
@@ -22,13 +21,12 @@ namespace Simple.Bus.Receiver.DeadLetter
                     var connectionString = messageContractSection.GetValue<string>("ConnectionString");
                     var topic = messageContractSection.GetValue<string>("Topic");
                     var subscription = messageContractSection.GetValue<string>("Subscription");
-                    var handlerConfiguration = new ReceiverConfigurationAzureServiceBus(connectionString, topic, subscription);
-                    handlerConfiguration.ReceiveOnlyDeadLetter();
+                    var configuration = new ReceiverConfigurationAzureServiceBus<MessageErrorContract>(topic, subscription);
+                    configuration.ReceiveOnlyDeadLetter();
+                    var credentials = new CredentialsAzureServiceBus(connectionString);
 
-                    services
-                        .AddBusReceiverFor<MessageErrorContract>(builder => builder
-                                .WithMessageHandler(new ConsumerMessageError().Consume)
-                                .WithAzureServiceBus(handlerConfiguration));
+                    services.AddAzureServiceBus(credentials)
+                        .AddBusReceiverFor<MessageErrorContract>(builder => builder.WithConfiguration(configuration));
 
                     services.AddHostedService<Worker>();
                 });

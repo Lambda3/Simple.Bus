@@ -15,7 +15,7 @@ You should use the class ReceiverConfigurationAzureServiceBus to configure servi
 ```c#
 services
 	.AddBusReceiverFor<YourMessage>(builder => builder
-		.WithMessageHandler((message) => 
+		.WithMessageHandler(message => 
 		{
 			Console.WriteLine($"Message received {message}");
 			return Task.Completed;
@@ -26,11 +26,10 @@ services
 - RabbitMQ
 
 You should use the class ReceiverConfigurationRabbitMQ to configure rabbitMQ.
-
 ```c#
 services
 	.AddBusReceiverFor<YourMessage>(builder => builder
-   		.WithMessageHandler((message) =>
+   		.WithMessageHandler(message =>
    		{
    			Console.WriteLine($"Receive message for rabbit mq: {message.Nome}");
    			return Task.CompletedTask;

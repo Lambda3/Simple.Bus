@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using Simple.Bus.Core.Receivers;
 using System;
 using System.Threading.Tasks;
 
 namespace Simple.Bus.Sample.Receiver
 {
-    public class ConsumerMessage 
+    public class ConsumerMessage : IConsumerFor<MessageContractASB>
     {
         private readonly ILogger logger;
 

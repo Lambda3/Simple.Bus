@@ -8,15 +8,14 @@ namespace Simple.Bus.Core.Receivers.Pipelines
 {
     public class PipelineReceiverFor<T> : IPipelineReceiverFor<T>
     {
-        private readonly Func<T, Task> functionHandler;
+        private readonly IConsumerFor<T> consumer;
         private readonly ISerializer serializer;
         private readonly ICryptography cryptography;
         private readonly ILogger logger;
 
-        public PipelineReceiverFor(Func<T, Task> functionHandler, ISerializer serializer, ICryptography cryptography, ILogger logger)
+        public PipelineReceiverFor(IConsumerFor<T> consumer, ISerializer serializer, ICryptography cryptography, ILogger logger)
         {
-            this.functionHandler = functionHandler;
-            this.functionHandler = functionHandler;
+            this.consumer = consumer;
             this.serializer = serializer;
             this.cryptography = cryptography;
             this.logger = logger;
@@ -29,7 +28,7 @@ namespace Simple.Bus.Core.Receivers.Pipelines
             logger.LogInformation("Deserializing message");
             var value = serializer.Deserialize<T>(messageDecrypted);
             logger.LogInformation("Executing callback");
-            return functionHandler.Invoke(value);
+            return consumer.Consume(value);
         }
     }
 }

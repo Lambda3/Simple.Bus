@@ -14,7 +14,7 @@ namespace Simple.Bus.Core.Builders
         private ISerializer serializer;
         private ICryptography cryptography;
         private Func<IPipelineReceiverFor<T>, ILogger, IReceiverFor<T>> receiver;
-        private Func<T, Task> handlerMessageFunction;
+        private IConsumerFor<T> handlerMessageFunction;
         private ILogger logger;
 
         public ReceiverBuilderFor<T> WithPipeline(IPipelineReceiverFor<T> pipeline)
@@ -37,12 +37,12 @@ namespace Simple.Bus.Core.Builders
 
         public ReceiverBuilderFor<T> WithMessageHandler(Func<T, Task> handlerMessageFunction)
         {
-            this.handlerMessageFunction = handlerMessageFunction;
+            this.handlerMessageFunction = new LambdaConsumer<T>(handlerMessageFunction);
             return this;
         }
         public ReceiverBuilderFor<T> WithMessageHandler(IConsumerFor<T> consumer)
         {
-            handlerMessageFunction = consumer.Consume;
+            handlerMessageFunction = consumer;
             return this;
         }
 
@@ -78,7 +78,7 @@ namespace Simple.Bus.Core.Builders
             if (receiver == null)
                 throw new ArgumentNullException(nameof(receiver), "Must be specified a transport");
 
-            return receiver.Invoke(pipeline, logger);
+            return receiver(pipeline, logger);
         }
     }
 }

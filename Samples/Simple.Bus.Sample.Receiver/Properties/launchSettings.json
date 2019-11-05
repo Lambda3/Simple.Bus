@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Simple.Bus.Sample.Receiver": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

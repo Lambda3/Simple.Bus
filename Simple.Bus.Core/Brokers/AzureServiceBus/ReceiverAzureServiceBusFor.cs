@@ -13,11 +13,14 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
     public class ReceiverAzureServiceBusFor<T> : ReceiverFor<T>
     {
         private readonly ISubscriptionClient subscriptionClient;
-        private readonly ReceiverConfigurationAzureServiceBus receiverConfiguration;
+        private readonly ReceiverConfigurationAzureServiceBus<T> receiverConfiguration;
 
-        public ReceiverAzureServiceBusFor(IPipelineReceiverFor<T> pipeline, ReceiverConfigurationAzureServiceBus receiverConfiguration, ILogger logger) : base(pipeline, logger)
+        public ReceiverAzureServiceBusFor(IPipelineReceiverFor<T> pipeline,
+            ReceiverConfigurationAzureServiceBus<T> receiverConfiguration, 
+            CredentialsAzureServiceBus credentials,
+            ILogger logger) : base(pipeline, logger)
         {
-            subscriptionClient = new SubscriptionClient(receiverConfiguration.ConnectionString, receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
+            subscriptionClient = new SubscriptionClient(credentials.Get(), receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
             {
                 PrefetchCount = 10,
                 OperationTimeout = TimeSpan.FromMinutes(1)

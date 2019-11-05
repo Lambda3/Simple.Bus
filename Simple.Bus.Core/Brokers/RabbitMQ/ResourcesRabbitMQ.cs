@@ -6,7 +6,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
     {
         const string RoutingKey = "";
 
-        public void CreateIfNotExist(IModel channel, ReceiverConfigurationRabbitMQ receiverConfiguration)
+        public void CreateIfNotExist<T>(IModel channel, ReceiverConfigurationRabbitMQ<T> receiverConfiguration)
         {
             channel.ExchangeDeclare(exchange: receiverConfiguration.Exchange, type: receiverConfiguration.TypeForExchange);
             channel.QueueDeclare(queue: receiverConfiguration.Queue.Name, durable: receiverConfiguration.Queue.Durable, exclusive: receiverConfiguration.Queue.Exclusive, autoDelete: receiverConfiguration.Queue.AutoDelete);

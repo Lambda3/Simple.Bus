@@ -1,6 +1,6 @@
 ﻿namespace Simple.Bus.Core.Receivers
 {
-    public abstract class ReceiverConfiguration
+    public abstract class ReceiverConfiguration<T>
     {
         public bool AutoCompleteMessage { get; private set; }
 

@@ -11,19 +11,25 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
     public partial class ReceiverRabbitMQFor<T> : ReceiverFor<T>
     {
         private readonly ResourcesRabbitMQ resources;
-        private readonly ReceiverConfigurationRabbitMQ receiverConfiguration;
+        private readonly ReceiverConfigurationRabbitMQ<T> receiverConfiguration;
+        private readonly CredentialsRabbitMQ credentials;
         private IConnection connection;
         private IModel channel;
 
-        public ReceiverRabbitMQFor(IPipelineReceiverFor<T> pipeline, ResourcesRabbitMQ resources, ReceiverConfigurationRabbitMQ receiverConfiguration, ILogger logger) : base(pipeline, logger)
+        public ReceiverRabbitMQFor(IPipelineReceiverFor<T> pipeline,
+            ResourcesRabbitMQ resources, 
+            ReceiverConfigurationRabbitMQ<T> receiverConfiguration, 
+            CredentialsRabbitMQ credentials,
+            ILogger logger) : base(pipeline, logger)
         {
             this.resources = resources;
             this.receiverConfiguration = receiverConfiguration;
+            this.credentials = credentials;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            var factory = receiverConfiguration.Credentials.Get();
+            var factory = credentials.Get();
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 

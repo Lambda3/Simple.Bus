@@ -2,11 +2,10 @@
 
 namespace Simple.Bus.Core.Brokers.AzureServiceBus
 {
-    public class ReceiverConfigurationAzureServiceBus : ReceiverConfiguration
+    public class ReceiverConfigurationAzureServiceBus<T> : ReceiverConfiguration<T>
     {
         const string DeadLetterSufix = "/$DeadLetterQueue";
         private readonly string subscriptionName;
-        public string ConnectionString { get; }
         public string TopicName { get; }
         public bool IsReceiveOnlyDeadLetter { get; private set; }
         public int MaxConcorrentCalls { get; set; }
@@ -14,18 +13,17 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         private const int MaxConcorrentCallDefault = 1;
         private const bool AutoCompleteDefault = false;
 
-        public ReceiverConfigurationAzureServiceBus(string connectionString, string topicName, string subscriptionName, int maxConcorrentCalls, bool autoCompleteMessage)
-            :base(autoCompleteMessage)
+        public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName, int maxConcorrentCalls, bool autoCompleteMessage)
+            : base(autoCompleteMessage)
         {
-            ConnectionString = connectionString;
             TopicName = topicName;
             this.subscriptionName = subscriptionName;
             MaxConcorrentCalls = maxConcorrentCalls;
             IsReceiveOnlyDeadLetter = false;
         }
 
-        public ReceiverConfigurationAzureServiceBus(string connectionString, string topicName, string subscriptionName)
-            : this(connectionString, topicName, subscriptionName, MaxConcorrentCallDefault, AutoCompleteDefault)
+        public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName)
+            : this(topicName, subscriptionName, MaxConcorrentCallDefault, AutoCompleteDefault)
         {
         }
 

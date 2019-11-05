@@ -32,17 +32,23 @@ namespace Simple.Bus.Sample.Receiver
             await base.StopAsync(cancellationToken);
         }
 
-        protected  override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 var message = handleReceiver.IsConnected() ? $"Alive at" : "Not alive at";
                 logger.LogInformation($"Azure Service Bus. {message} {DateTimeOffset.Now}");
 
-                Thread.Sleep(5000);
+                try
+                {
+                    await Task.Delay(5000, stoppingToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
             }
-
-            return Task.CompletedTask;
         }
     }
 }
