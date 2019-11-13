@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Simple.Bus.Core.Cryptographers;
 using Simple.Bus.Core.Serializers;
-using System;
 using System.Threading.Tasks;
 
 namespace Simple.Bus.Core.Receivers.Pipelines
@@ -11,9 +10,9 @@ namespace Simple.Bus.Core.Receivers.Pipelines
         private readonly IConsumerFor<T> consumer;
         private readonly ISerializer serializer;
         private readonly ICryptography cryptography;
-        private readonly ILogger logger;
+        private readonly ILogger<IPipelineReceiverFor<T>> logger;
 
-        public PipelineReceiverFor(IConsumerFor<T> consumer, ISerializer serializer, ICryptography cryptography, ILogger logger)
+        public PipelineReceiverFor(IConsumerFor<T> consumer, ISerializer serializer, ICryptography cryptography, ILogger<IPipelineReceiverFor<T>> logger)
         {
             this.consumer = consumer;
             this.serializer = serializer;

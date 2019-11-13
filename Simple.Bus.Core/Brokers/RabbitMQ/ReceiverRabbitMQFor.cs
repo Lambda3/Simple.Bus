@@ -20,7 +20,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
             ResourcesRabbitMQ resources, 
             ReceiverConfigurationRabbitMQ<T> receiverConfiguration, 
             CredentialsRabbitMQ credentials,
-            ILogger logger) : base(pipeline, logger)
+            ILogger<IReceiverFor<T>> logger) : base(pipeline, logger)
         {
             this.resources = resources;
             this.receiverConfiguration = receiverConfiguration;

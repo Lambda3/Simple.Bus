@@ -6,9 +6,9 @@ namespace Simple.Bus.Core.Builders.DotNetCore
 {
     public class ConsumerDefault<T> : IConsumerFor<T>
     {
-        private readonly ILogger logger;
+        private readonly ILogger<IConsumerFor<T>> logger;
 
-        public ConsumerDefault(ILogger logger)
+        public ConsumerDefault(ILogger<IConsumerFor<T>> logger)
         {
             this.logger = logger;
         }

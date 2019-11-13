@@ -13,7 +13,7 @@ namespace Simple.Bus.Core.Senders.Pipelines
         private readonly ISerializer serializer;
         private readonly ILogger logger;
 
-        public SenderPipelineFor(ISenderFor<T> sender, ICryptography cryptography, ISerializer serializer, ILogger logger)
+        public SenderPipelineFor(ISenderFor<T> sender, ICryptography cryptography, ISerializer serializer, ILogger<ISenderPipelineFor<T>> logger)
         {
             this.sender = sender;
             this.cryptography = cryptography;

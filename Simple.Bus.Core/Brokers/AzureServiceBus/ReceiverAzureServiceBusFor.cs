@@ -18,7 +18,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         public ReceiverAzureServiceBusFor(IPipelineReceiverFor<T> pipeline,
             ReceiverConfigurationAzureServiceBus<T> receiverConfiguration, 
             CredentialsAzureServiceBus credentials,
-            ILogger logger) : base(pipeline, logger)
+            ILogger<IReceiverFor<T>> logger) : base(pipeline, logger)
         {
             subscriptionClient = new SubscriptionClient(credentials.Get(), receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
             {

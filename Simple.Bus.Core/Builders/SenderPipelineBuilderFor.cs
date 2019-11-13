@@ -11,8 +11,9 @@ namespace Simple.Bus.Core.Builders
     {
         private ISerializer serializer;
         private ICryptography cryptography;
-        private Func<ILogger, ISenderFor<T>> sender;
-        public ILogger logger;
+        private Func<ILogger<ISenderFor<T>>, ISenderFor<T>> sender;
+        public ILogger<ISenderPipelineFor<T>> loggerPipeline;
+        public ILogger<ISenderFor<T>> loggerSender;
 
         public SenderPipelineBuilderFor<T> WithSerializer(ISerializer serializer)
         {
@@ -26,16 +27,22 @@ namespace Simple.Bus.Core.Builders
             return this;
         }
 
-        public SenderPipelineBuilderFor<T> WithSender(Func<ILogger, ISenderFor<T>> sender)
+        public SenderPipelineBuilderFor<T> WithSender(Func<ILogger<ISenderFor<T>>, ISenderFor<T>> sender)
         {
             this.sender = sender;
             return this;
         }
-        public SenderPipelineBuilderFor<T> WithLogger(ILogger logger)
+        public SenderPipelineBuilderFor<T> WithLogger(ILogger<ISenderPipelineFor<T>> logger)
         {
-            this.logger = logger;
+            loggerPipeline = logger;
             return this;
         }
+        public SenderPipelineBuilderFor<T> WithLogger(ILogger<ISenderFor<T>> logger)
+        {
+            loggerSender = logger;
+            return this;
+        }
+
 
         public ISenderPipelineFor<T> Build()
         {
@@ -45,13 +52,16 @@ namespace Simple.Bus.Core.Builders
             if (cryptography == null)
                 WithCriptographer(new CryptographyDefault());
 
-            if (logger == null)
-                WithLogger(Loggers.LoggerFactory.CreateLogger<T>());
+            if (loggerPipeline == null)
+                throw new ArgumentNullException(nameof(loggerPipeline));
+
+            if (loggerSender == null)
+                throw new ArgumentNullException(nameof(loggerSender));
 
             if (sender == null)
                 throw new ArgumentNullException(nameof(sender), "Sender transport must be especified.");
 
-            return new SenderPipelineFor<T>(sender.Invoke(logger), cryptography, serializer, logger);
+            return new SenderPipelineFor<T>(sender.Invoke(loggerSender), cryptography, serializer, loggerPipeline);
         }
     }
 }

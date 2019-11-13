@@ -11,10 +11,10 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
         private readonly IConnection connection;
         private readonly IModel channel;
         private readonly string exchange;
-        private readonly ILogger logger;
+        private readonly ILogger<ISenderFor<T>> logger;
         private const string RoutingKey = "";
 
-        public SenderRabbitMQFor(CredentialsRabbitMQ credentials, string exchange, ILogger logger)
+        public SenderRabbitMQFor(CredentialsRabbitMQ credentials, string exchange, ILogger<ISenderFor<T>> logger)
         {
             this.exchange = exchange;
             this.logger = logger;

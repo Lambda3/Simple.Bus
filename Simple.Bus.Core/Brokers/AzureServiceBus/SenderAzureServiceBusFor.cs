@@ -9,9 +9,9 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
     public class SenderAzureServiceBusFor<T> : ISenderFor<T>, IDisposable
     {
         private readonly ITopicClient topicClient;
-        private readonly ILogger logger;
+        private readonly ILogger<ISenderFor<T>> logger;
 
-        public SenderAzureServiceBusFor(string connectionString, string topic, ILogger logger)
+        public SenderAzureServiceBusFor(string connectionString, string topic, ILogger<ISenderFor<T>> logger)
         {
             topicClient = new TopicClient(connectionString, topic)
             {

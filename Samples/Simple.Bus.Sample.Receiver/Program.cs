@@ -21,13 +21,6 @@ namespace Simple.Bus.Sample.Receiver
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    var logger = LoggerFactory.Create(builder => builder
-                            .AddConsole()
-                            .SetMinimumLevel(LogLevel.Debug))
-                        .CreateLogger<Program>() as ILogger;
-
-                    services.AddSingleton(logger);
-
                     var azureServiceBusSection = hostContext.Configuration.GetSection("Bus:MessageContract:AzureServiceBus");
 
                     var connectionString = azureServiceBusSection.GetValue<string>("ConnectionString");

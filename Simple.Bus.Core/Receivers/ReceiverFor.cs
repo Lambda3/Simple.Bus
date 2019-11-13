@@ -9,9 +9,9 @@ namespace Simple.Bus.Core.Receivers
     public abstract class ReceiverFor<T> : IReceiverFor<T>
     {
         private readonly IPipelineReceiverFor<T> pipeline;
-        protected readonly ILogger logger;
+        protected readonly ILogger<IReceiverFor<T>> logger;
 
-        public ReceiverFor(IPipelineReceiverFor<T> pipeline, ILogger logger)
+        public ReceiverFor(IPipelineReceiverFor<T> pipeline, ILogger<IReceiverFor<T>> logger)
         {
             this.pipeline = pipeline;
             this.logger = logger;
