@@ -6,7 +6,10 @@ namespace Simple.Bus.Core.Serializers
     {
         public T Deserialize<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
         }
 
         public string Serialize<T>(T value)
