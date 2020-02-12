@@ -22,20 +22,19 @@ namespace Simple.Bus.Core.Builders.DotNetCore
 
         public ServiceCollectionReceiverBuilderFor<T> WithMessageHandler(Func<T, Task> handlerMessageFunction)
         {
-            var consumer = new LambdaConsumer<T>(handlerMessageFunction);
-            services.AddSingleton<IConsumerFor<T>>(consumer);
+            services.AddTransient<IConsumerFor<T>>(x => new LambdaConsumer<T>(handlerMessageFunction));
             return this;
         }
 
         public ServiceCollectionReceiverBuilderFor<T> WithMessageHandler<Q>() where Q : class, IConsumerFor<T>
         {
-            services.AddSingleton<IConsumerFor<T>, Q>();
+            services.AddTransient<IConsumerFor<T>, Q>();
             return this;
         }
 
         public ServiceCollectionReceiverBuilderFor<T> WithPipelineReceiver<Q>() where Q : class, IPipelineReceiverFor<T>
         {
-            services.AddSingleton<IPipelineReceiverFor<T>, Q>();
+            services.AddTransient<IPipelineReceiverFor<T>, Q>();
             return this;
         }
 
@@ -63,8 +62,9 @@ namespace Simple.Bus.Core.Builders.DotNetCore
             services.TryAddTransient<T>();
             services.TryAddSingleton<ISerializer, SerializerDefault>();
             services.TryAddSingleton<ICryptography, CryptographyDefault>();
-            services.TryAddSingleton<IPipelineReceiverFor<T>, PipelineReceiverFor<T>>();
-            services.TryAddSingleton<IConsumerFor<T>, ConsumerDefault<T>>();
+            services.TryAddTransient<IPipelineReceiverFor<T>, PipelineReceiverFor<T>>();
+            services.TryAddTransient<IConsumerFor<T>, ConsumerDefault<T>>();
+            services.AddTransient<Func<IPipelineReceiverFor<T>>>(x => () => x.GetService<IPipelineReceiverFor<T>>());
             services.AddSingleton<ResourcesRabbitMQ>();
 
             return services;

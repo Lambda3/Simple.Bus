@@ -3,6 +3,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Simple.Bus.Core.Receivers;
 using Simple.Bus.Core.Receivers.Pipelines;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,11 +17,11 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
         private IConnection connection;
         private IModel channel;
 
-        public ReceiverRabbitMQFor(IPipelineReceiverFor<T> pipeline,
-            ResourcesRabbitMQ resources, 
-            ReceiverConfigurationRabbitMQ<T> receiverConfiguration, 
+        public ReceiverRabbitMQFor(Func<IPipelineReceiverFor<T>> services,
+            ResourcesRabbitMQ resources,
+            ReceiverConfigurationRabbitMQ<T> receiverConfiguration,
             CredentialsRabbitMQ credentials,
-            ILogger<IReceiverFor<T>> logger) : base(pipeline, logger)
+            ILogger<IReceiverFor<T>> logger) : base(services, logger)
         {
             this.resources = resources;
             this.receiverConfiguration = receiverConfiguration;

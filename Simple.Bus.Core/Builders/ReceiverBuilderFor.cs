@@ -10,15 +10,15 @@ namespace Simple.Bus.Core.Builders
 {
     public class ReceiverBuilderFor<T>
     {
-        private IPipelineReceiverFor<T> pipeline;
+        private Func<IPipelineReceiverFor<T>> pipeline;
         private ISerializer serializer;
         private ICryptography cryptography;
-        private Func<IPipelineReceiverFor<T>, ILogger<IReceiverFor<T>>, IReceiverFor<T>> receiver;
+        private Func<Func<IPipelineReceiverFor<T>>, ILogger<IReceiverFor<T>>, IReceiverFor<T>> receiver;
         private IConsumerFor<T> handlerMessageFunction;
         private ILogger<IPipelineReceiverFor<T>> loggerPipeline;
         private ILogger<IReceiverFor<T>> loggerReceiver;
 
-        public ReceiverBuilderFor<T> WithPipeline(IPipelineReceiverFor<T> pipeline)
+        public ReceiverBuilderFor<T> WithPipeline(Func<IPipelineReceiverFor<T>> pipeline)
         {
             this.pipeline = pipeline;
             return this;
@@ -47,7 +47,7 @@ namespace Simple.Bus.Core.Builders
             return this;
         }
 
-        public ReceiverBuilderFor<T> WithReceiver(Func<IPipelineReceiverFor<T>, ILogger<IReceiverFor<T>>, IReceiverFor<T>> receiver)
+        public ReceiverBuilderFor<T> WithReceiver(Func<Func<IPipelineReceiverFor<T>>, ILogger<IReceiverFor<T>>, IReceiverFor<T>> receiver)
         {
             this.receiver = receiver;
             return this;
@@ -58,7 +58,6 @@ namespace Simple.Bus.Core.Builders
             loggerPipeline = logger;
             return this;
         }
-        
         public ReceiverBuilderFor<T> WithLogger(ILogger<IReceiverFor<T>> logger)
         {
             loggerReceiver = logger;
@@ -75,7 +74,7 @@ namespace Simple.Bus.Core.Builders
                 WithCriptographer(new CryptographyDefault());
 
             if (pipeline == null)
-                WithPipeline(new PipelineReceiverFor<T>(handlerMessageFunction, serializer, cryptography, loggerPipeline));
+                WithPipeline(() => new PipelineReceiverFor<T>(handlerMessageFunction, serializer, cryptography, loggerPipeline));
 
             if (handlerMessageFunction == null)
                 throw new ArgumentNullException(nameof(handlerMessageFunction), "Must be specified a handler message function");

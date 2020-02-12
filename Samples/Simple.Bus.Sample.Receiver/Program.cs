@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Simple.Bus.Core.Brokers.AzureServiceBus;
 using Simple.Bus.Core.Brokers.RabbitMQ;
 using Simple.Bus.Core.Builders.DotNetCore;
-using System;
-using System.Threading.Tasks;
 
 namespace Simple.Bus.Sample.Receiver
 {
@@ -40,7 +37,7 @@ namespace Simple.Bus.Sample.Receiver
                     services.AddHostedService<WorkerAzureServiceBus>();
 
                     var rabbitMQBusSection = hostContext.Configuration.GetSection("Bus:MessageContract:RabbitMQ");
-                    
+
                     var hostName = rabbitMQBusSection.GetValue<string>("HostName");
                     var port = rabbitMQBusSection.GetValue<int>("Port");
                     var userName = rabbitMQBusSection.GetValue<string>("UserName");
@@ -54,11 +51,7 @@ namespace Simple.Bus.Sample.Receiver
                         .AddRabbitMQ(credentialsRabbitMQ)
                         .AddBusReceiverFor<MessageContractRMQ>(builder => builder
                             .WithConfiguration(configurationRabbitMQ)
-                            .WithMessageHandler(message =>
-                            {
-                                Console.WriteLine($"Receive message for rabbitMQ: {message.Nome}");
-                                return Task.CompletedTask;
-                            }));
+                            .WithMessageHandler<ConsumerMessageRMQ>());
 
                     services.AddHostedService<WorkerRabbitMQ>();
                 });

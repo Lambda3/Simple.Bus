@@ -15,10 +15,10 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         private readonly ISubscriptionClient subscriptionClient;
         private readonly ReceiverConfigurationAzureServiceBus<T> receiverConfiguration;
 
-        public ReceiverAzureServiceBusFor(IPipelineReceiverFor<T> pipeline,
-            ReceiverConfigurationAzureServiceBus<T> receiverConfiguration, 
+        public ReceiverAzureServiceBusFor(Func<IPipelineReceiverFor<T>> services,
+            ReceiverConfigurationAzureServiceBus<T> receiverConfiguration,
             CredentialsAzureServiceBus credentials,
-            ILogger<IReceiverFor<T>> logger) : base(pipeline, logger)
+            ILogger<IReceiverFor<T>> logger) : base(services, logger)
         {
             subscriptionClient = new SubscriptionClient(credentials.Get(), receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
             {

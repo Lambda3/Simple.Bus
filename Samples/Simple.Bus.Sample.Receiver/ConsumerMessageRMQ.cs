@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 
 namespace Simple.Bus.Sample.Receiver
 {
-    public class ConsumerMessage : IConsumerFor<MessageContractASB>
+    public class ConsumerMessageRMQ: IConsumerFor<MessageContractRMQ>
     {
         private readonly ILogger<ConsumerMessage> logger;
 
-        public ConsumerMessage(ILogger<ConsumerMessage> logger)
+        public ConsumerMessageRMQ(ILogger<ConsumerMessage> logger)
         {
             this.logger = logger;
         }
 
-        public Task Consume(MessageContractASB message)
+        public Task Consume(MessageContractRMQ message)
         {
-            logger.LogInformation($"Receive message for azure service bus: {message.Nome}");
+            logger.LogInformation($"Receive message for rabbitmq: {message.Nome}");
             return Task.CompletedTask;
         }
     }
