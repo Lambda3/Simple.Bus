@@ -38,7 +38,7 @@ namespace Simple.Bus.Sample.Receiver
             while (!stoppingToken.IsCancellationRequested)
             {
                 var message = handleReceiver.IsConnected() ? $"Alive at" : "Not alive at";
-                logger.LogInformation($"Azure Service Bus. {message} {DateTimeOffset.Now}");
+                //logger.LogInformation($"Azure Service Bus. {message} {DateTimeOffset.Now}");
 
                 try
                 {

@@ -16,6 +16,7 @@ namespace Simple.Bus.Sample.Receiver
         public Task Consume(MessageContractASB message)
         {
             logger.LogInformation($"Receive message for azure service bus: {message.Nome}");
+            //throw new RetryException("Custom error");
             return Task.CompletedTask;
         }
     }

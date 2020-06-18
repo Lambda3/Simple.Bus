@@ -14,6 +14,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
     {
         private readonly ISubscriptionClient subscriptionClient;
         private readonly ReceiverConfigurationAzureServiceBus<T> receiverConfiguration;
+        private readonly CredentialsAzureServiceBus credentials;
 
         public ReceiverAzureServiceBusFor(Func<IPipelineReceiverFor<T>> services,
             ReceiverConfigurationAzureServiceBus<T> receiverConfiguration,
@@ -27,6 +28,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             };
 
             this.receiverConfiguration = receiverConfiguration;
+            this.credentials = credentials;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -53,11 +55,46 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         {
             logger.LogInformation($"Enqueued time: {message.SystemProperties.EnqueuedTimeUtc}");
             logger.LogInformation($"Lock until {message.SystemProperties.LockedUntilUtc}");
-            await ExecutePipelineAsync(message.Body);
+
+            try
+            {
+                await ExecutePipelineAsync(message.Body);
+            }
+            catch (RetryException e)
+            {
+                await CustomRetry(message, e);
+            }
+
             if (!cancellationToken.IsCancellationRequested)
             {
                 await CompleteMesageManually(message);
             }
+        }
+
+        private async Task CustomRetry(Message message, Exception e)
+        {
+            const string keyCount = "count_retry";
+            var newMessage = message.Clone();
+            var counter = 1;
+            if (message.UserProperties.ContainsKey(keyCount))
+            {
+                int.TryParse(message.UserProperties[keyCount].ToString(), out counter);
+                counter++;
+                newMessage.UserProperties[keyCount] = counter;
+            }
+            else
+                newMessage.UserProperties.Add(keyCount, counter);
+
+            if (counter > receiverConfiguration.CustomRetryCount)
+                throw new ServiceBusException(false, "Max custom retry reached", e);
+
+            logger.LogError($"Retry exception");
+            logger.LogInformation($"Attemped retry {counter} - {receiverConfiguration.CustomRetryCount}");
+            newMessage.ScheduledEnqueueTimeUtc = message.SystemProperties.EnqueuedTimeUtc.AddSeconds(receiverConfiguration.CustomRetryDelay);
+            logger.LogInformation($"Retry at {newMessage.ScheduledEnqueueTimeUtc}");
+            var topicClient = new TopicClient(credentials.Get(), receiverConfiguration.TopicName);
+            await topicClient.SendAsync(newMessage);
+            await topicClient.CloseAsync();
         }
 
         public override Task StopAsync(CancellationToken cancellationToken) =>
