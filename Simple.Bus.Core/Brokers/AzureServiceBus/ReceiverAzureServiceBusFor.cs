@@ -75,6 +75,8 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         {
             const string keyCount = "count_retry";
             var newMessage = message.Clone();
+            newMessage.MessageId = Guid.NewGuid().ToString();
+
             var counter = 1;
             if (message.UserProperties.ContainsKey(keyCount))
             {
