@@ -18,21 +18,19 @@ namespace Simple.Bus.Core.Receivers
             this.logger = logger;
         }
 
-        protected Task ExecutePipelineAsync(byte[] message)
+        protected async Task ExecutePipelineAsync(byte[] message)
         {
             logger.LogInformation("Executing receiver pipeline");
-            IPipelineReceiverFor<T> pipeline;
             try
             {
-                pipeline = services.Invoke();
+                using var pipeline = services();
+                await pipeline.Receive(Encoding.UTF8.GetString(message));
             }
             catch (Exception e)
             {
-                logger.LogError($"Error while creating pipeline. {e.Message}", e);
+                logger.LogError($"Error while executing pipeline. {e.Message}", e);
                 throw;
             }
-
-            return pipeline.Receive(Encoding.UTF8.GetString(message));
         }
 
         public abstract Task StartAsync(CancellationToken cancellationToken);

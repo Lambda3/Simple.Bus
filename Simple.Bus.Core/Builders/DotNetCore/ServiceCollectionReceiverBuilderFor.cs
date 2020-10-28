@@ -64,10 +64,29 @@ namespace Simple.Bus.Core.Builders.DotNetCore
             services.TryAddSingleton<ICryptography, CryptographyDefault>();
             services.TryAddTransient<IPipelineReceiverFor<T>, PipelineReceiverFor<T>>();
             services.TryAddTransient<IConsumerFor<T>, ConsumerDefault<T>>();
-            services.AddTransient<Func<IPipelineReceiverFor<T>>>(x => () => x.GetService<IPipelineReceiverFor<T>>());
+            services.AddTransient<Func<IPipelineReceiverFor<T>>>(x => () => PipelineFactory(x));
             services.AddSingleton<ResourcesRabbitMQ>();
 
             return services;
+        }
+
+        private IPipelineReceiverFor<T> PipelineFactory(IServiceProvider x)
+        {
+            var scope = x.CreateScope();
+            try
+            {
+                var pipeline = scope.ServiceProvider.GetService<IPipelineReceiverFor<T>>();
+                pipeline.EventoDispose = () =>
+                {
+                    scope.Dispose();
+                };
+                return pipeline;
+            }
+            catch
+            {
+                scope.Dispose();
+                throw;
+            }
         }
     }
 }

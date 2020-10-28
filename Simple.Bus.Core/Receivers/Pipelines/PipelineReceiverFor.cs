@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Simple.Bus.Core.Cryptographers;
 using Simple.Bus.Core.Serializers;
+using System;
 using System.Threading.Tasks;
 
 namespace Simple.Bus.Core.Receivers.Pipelines
@@ -19,6 +20,10 @@ namespace Simple.Bus.Core.Receivers.Pipelines
             this.cryptography = cryptography;
             this.logger = logger;
         }
+
+        public Action EventoDispose { get; set; }
+
+        public void Dispose() => EventoDispose?.Invoke();
 
         public Task Receive(string message)
         {

@@ -13,7 +13,8 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
                 HostName = hostName,
                 Port = port,
                 UserName = userName,
-                Password = password
+                Password = password,
+                DispatchConsumersAsync = true
             };
         }
         public ConnectionFactory Get() => factory;

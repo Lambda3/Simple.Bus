@@ -36,7 +36,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
 
             resources.CreateIfNotExist(channel, receiverConfiguration);
 
-            var consumer = new EventingBasicConsumer(channel);
+            var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += ProccessMessageAsync;
 
             channel.BasicConsume(receiverConfiguration.Queue.Name, receiverConfiguration.AutoCompleteMessage, consumer);
@@ -44,9 +44,9 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
             return Task.CompletedTask;
         }
 
-        void ProccessMessageAsync(object message, BasicDeliverEventArgs e)
+        async Task ProccessMessageAsync(object message, BasicDeliverEventArgs e)
         {
-            ExecutePipelineAsync(e.Body).GetAwaiter().GetResult();
+            await ExecutePipelineAsync(e.Body);
 
             if (!receiverConfiguration.AutoCompleteMessage)
                 channel.BasicAck(e.DeliveryTag, false);
