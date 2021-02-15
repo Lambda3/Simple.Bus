@@ -24,7 +24,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             subscriptionClient = new SubscriptionClient(credentials.Get(), receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
             {
                 PrefetchCount = receiverConfiguration.PrefetchCount,
-                OperationTimeout = TimeSpan.FromMinutes(1),
+                OperationTimeout = TimeSpan.FromMinutes(1)
             };
 
             this.receiverConfiguration = receiverConfiguration;
@@ -63,6 +63,11 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             catch (RetryException e)
             {
                 await CustomRetry(message, e);
+            }
+            catch (NoRetryException e)
+            {
+                await subscriptionClient.DeadLetterAsync(message.SystemProperties.LockToken, "Direct deadletter", e.Message);
+                return;
             }
 
             if (!cancellationToken.IsCancellationRequested)
