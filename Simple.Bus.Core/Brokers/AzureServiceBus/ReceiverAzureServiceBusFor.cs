@@ -23,8 +23,8 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         {
             subscriptionClient = new SubscriptionClient(credentials.Get(), receiverConfiguration.TopicName, receiverConfiguration.SubscriptionName)
             {
-                PrefetchCount = 10,
-                OperationTimeout = TimeSpan.FromMinutes(1)
+                PrefetchCount = receiverConfiguration.PrefetchCount,
+                OperationTimeout = TimeSpan.FromMinutes(1),
             };
 
             this.receiverConfiguration = receiverConfiguration;
@@ -37,7 +37,7 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             {
                 MaxConcurrentCalls = receiverConfiguration.MaxConcorrentCalls,
                 AutoComplete = receiverConfiguration.AutoCompleteMessage,
-                MaxAutoRenewDuration = TimeSpan.FromMinutes(10)
+                MaxAutoRenewDuration = TimeSpan.FromMinutes(2)
             };
 
             subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);

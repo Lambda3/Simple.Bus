@@ -11,13 +11,15 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
         public int MaxConcorrentCalls { get; set; }
         public int CustomRetryCount { get; set; }
         public int CustomRetryDelay { get; set; }
+        public int PrefetchCount { get; set; }
 
         private const int MaxConcorrentCallDefault = 1;
         private const bool AutoCompleteDefault = false;
         private const int CustomRetryCountDefault = 3;
         private const int CustomRetryDelayDefault = 10;
+        private const int PrefetchCountDefault = 1;
 
-        public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName, int maxConcorrentCalls, bool autoCompleteMessage, int customRetryCount, int customRetryDelay)
+        public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName, int maxConcorrentCalls, bool autoCompleteMessage, int customRetryCount, int customRetryDelay, int prefetchCount)
             : base(autoCompleteMessage)
         {
             TopicName = topicName;
@@ -26,16 +28,17 @@ namespace Simple.Bus.Core.Brokers.AzureServiceBus
             IsReceiveOnlyDeadLetter = false;
             CustomRetryCount = customRetryCount;
             CustomRetryDelay = customRetryDelay;
+            PrefetchCount = prefetchCount;
         }
 
         public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName, int maxConcorrentCalls, bool autoCompleteMessage)
-            : this(topicName, subscriptionName, maxConcorrentCalls, autoCompleteMessage, CustomRetryCountDefault, CustomRetryDelayDefault)
+            : this(topicName, subscriptionName, maxConcorrentCalls, autoCompleteMessage, CustomRetryCountDefault, CustomRetryDelayDefault, PrefetchCountDefault)
         {
         }
 
 
         public ReceiverConfigurationAzureServiceBus(string topicName, string subscriptionName)
-            : this(topicName, subscriptionName, MaxConcorrentCallDefault, AutoCompleteDefault, CustomRetryCountDefault, CustomRetryDelayDefault)
+            : this(topicName, subscriptionName, MaxConcorrentCallDefault, AutoCompleteDefault, CustomRetryCountDefault, CustomRetryDelayDefault, PrefetchCountDefault)
         {
         }
 
