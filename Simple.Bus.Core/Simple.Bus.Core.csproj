@@ -3,16 +3,17 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
     <PackageId>Simple.Bus</PackageId>
-    <Version>2.0.3-beta.1</Version>
-    <Authors>William Espinosa de Rezende</Authors>
+    <Version>2.0.3-beta.2</Version>
+    <Authors>William Espinosa de Rezende;Giovanni Bassi</Authors>
     <Company>Lambda3</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title></Title>
     <PackageDescription>A simple way to receive and send message to Azure Service Bus and RabbitMq</PackageDescription>
     <PackageTags>dotnet core;azure service bus; rabbitmq</PackageTags>
     <RepositoryUrl>https://github.com/Lambda3/Simple.Bus</RepositoryUrl>
-    <IncludeSource>true</IncludeSource>
-    <RepositoryBranch>master</RepositoryBranch>
+    <RepositoryBranch>main</RepositoryBranch>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
