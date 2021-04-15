@@ -8,7 +8,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
 
         public void CreateIfNotExist<T>(IModel channel, ReceiverConfigurationRabbitMQ<T> receiverConfiguration)
         {
-            channel.ExchangeDeclare(exchange: receiverConfiguration.Exchange, type: receiverConfiguration.TypeForExchange);
+            channel.ExchangeDeclare(exchange: receiverConfiguration.Exchange, type: receiverConfiguration.TypeForExchange, durable: receiverConfiguration.Queue.Durable);
             channel.QueueDeclare(queue: receiverConfiguration.Queue.Name, durable: receiverConfiguration.Queue.Durable, exclusive: receiverConfiguration.Queue.Exclusive, autoDelete: receiverConfiguration.Queue.AutoDelete);
             channel.QueueBind(receiverConfiguration.Queue.Name, receiverConfiguration.Exchange, RoutingKey);
         }

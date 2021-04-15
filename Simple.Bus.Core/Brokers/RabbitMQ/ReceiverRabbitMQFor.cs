@@ -46,7 +46,7 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
 
         async Task ProccessMessageAsync(object message, BasicDeliverEventArgs e)
         {
-            await ExecutePipelineAsync(e.Body);
+            await ExecutePipelineAsync(e.Body.Span);
 
             if (!receiverConfiguration.AutoCompleteMessage)
                 channel.BasicAck(e.DeliveryTag, false);

@@ -16,7 +16,17 @@ namespace Simple.Bus.Core.Brokers.RabbitMQ
         {
         }
 
-        public ReceiverConfigurationRabbitMQ( string exchange, string exchangeType, bool autoComplete, QueueConfigurationRabbitMQ queue)
+        public ReceiverConfigurationRabbitMQ(string exchange, string exchangeType, string queue)
+            : this(exchange, exchangeType, AutoCompleteDefault, new QueueConfigurationRabbitMQ(queue))
+        {
+        }
+
+        public ReceiverConfigurationRabbitMQ(string exchange, string exchangeType, bool autoComplete, string queue)
+            : this(exchange, exchangeType, autoComplete, new QueueConfigurationRabbitMQ(queue))
+        {
+        }
+
+        public ReceiverConfigurationRabbitMQ(string exchange, string exchangeType, bool autoComplete, QueueConfigurationRabbitMQ queue)
             : base(autoComplete)
         {
 

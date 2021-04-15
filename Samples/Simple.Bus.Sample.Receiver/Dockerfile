@@ -1,18 +1,17 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:3.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0-buster-slim as base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["Simple.Bus.Sample.Receiver/Simple.Bus.Sample.Receiver.csproj", "Simple.Bus.Sample.Receiver/"]
-RUN dotnet restore "Simple.Bus.Sample.Receiver/Simple.Bus.Sample.Receiver.csproj"
+COPY ["Simple.Bus.Core/Simple.Bus.Core.csproj", "Simple.Bus.Core/"]
+COPY ["Samples/Simple.Bus.Sample.Receiver/Simple.Bus.Sample.Receiver.csproj", "Samples/Simple.Bus.Sample.Receiver/"]
+RUN dotnet restore "Samples/Simple.Bus.Sample.Receiver/Simple.Bus.Sample.Receiver.csproj"
 COPY . .
-WORKDIR "/src/Simple.Bus.Sample.Receiver"
-RUN dotnet build "Simple.Bus.Sample.Receiver.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "Simple.Bus.Sample.Receiver.csproj" -c Release -o /app/publish
+RUN dotnet publish "/src/Samples/Simple.Bus.Sample.Receiver/Simple.Bus.Sample.Receiver.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Simple.Bus.Sample.Receiver.dll"]
+ENTRYPOINT ["/app/Simple.Bus.Sample.Receiver"]
+ENV DOTNET_ENVIRONMENT=Development
+ENV Bus__MessageContract__RabbitMQ__HostName=host.docker.internal
+COPY --from=build /app/publish .

@@ -18,13 +18,13 @@ namespace Simple.Bus.Core.Receivers
             this.logger = logger;
         }
 
-        protected async Task ExecutePipelineAsync(byte[] message)
+        protected Task ExecutePipelineAsync(ReadOnlySpan<byte> message)
         {
             logger.LogInformation("Executing receiver pipeline");
             try
             {
                 using var pipeline = services();
-                await pipeline.Receive(Encoding.UTF8.GetString(message));
+                return pipeline.Receive(Encoding.UTF8.GetString(message));
             }
             catch (Exception e)
             {
