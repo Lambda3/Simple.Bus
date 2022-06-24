@@ -10,13 +10,14 @@ You can install through [nuget](https://www.nuget.org/packages/Simple.Bus).
 
 ### Receive
 
-- Azure Service Bus 
+- Azure Service Bus
 
 You should use the class ReceiverConfigurationAzureServiceBus to configure service bus.
+
 ```c#
 services
     .AddBusReceiverFor<YourMessage>(builder => builder
-        .WithMessageHandler(message => 
+        .WithMessageHandler(message =>
         {
             Console.WriteLine($"Message received {message}");
             return Task.Completed;
@@ -24,9 +25,11 @@ services
         .WithLogger(logger)
         .WithAzureServiceBus(receiverConfigurationAzureServiceBus));
 ```
+
 - RabbitMQ
 
 You should use the class ReceiverConfigurationRabbitMQ to configure rabbitMQ.
+
 ```c#
 services
     .AddBusReceiverFor<YourMessage>(builder => builder
@@ -46,9 +49,8 @@ You must call Stop for ```IReceiverFor<YourMessage>``` to stop listening
 
 ### Send
 
-
 - RabbitMQ
-            
+
 ```c#
 var sender = new SenderPipelineBuilderFor<YourMessage>().WithRabbitMq(credentials, exchange).Build();
 
@@ -62,7 +64,7 @@ var sender = new SenderPipelineBuilderFor<YourMessage>().WithAzureServiceBus(con
 ```
 
 or
- 
+
 ```c#
 services.AddBusSenderFor<YourMessage>(builder => builder.WithAzureServiceBus(connectionString, topicName));
 
@@ -71,6 +73,7 @@ services.AddBusSenderFor<YourMessage>(builder => builder.WithAzureServiceBus(con
 ## Samples
 
 There are four samples:
+
 - Samples/Simple.Bus.Sample.Producer.AzureServiceBus
 - Samples/Simple.Bus.Sample.Producer.RabbitMQ
 - Samples/Simple.Bus.Sample.Receiver
@@ -88,7 +91,7 @@ docker run -d --hostname my-rabbit --name some-rabbit -p 15672:15672 rabbitmq:3.
 
 You can read more about the RabbitMQ image on [Docker Hub](https://hub.docker.com/_/rabbitmq).
 
-You can access http://localhost:15672/ and log into the management page
+You can access <http://localhost:15672/> and log into the management page
 with user `guest` and password `guest`. There, go to Exchanges and
 create an exchange with name `exchange-message`, then go to Queues
 and create a queue named `queue-message`, then go back to
@@ -168,7 +171,7 @@ You can extend Serialization, Cryptography, Pipeline and Logging.
 
 ## Contributing
 
-The main supported IDE for development is Visual Studio 2019.
+The main supported IDE for development is Visual Studio 2019/2022.
 
 Questions, comments, bug reports, and pull requests are all welcome.
 Bug reports that include steps to reproduce (including code) are
@@ -179,7 +182,7 @@ to anyone yet, and if it is, talk to that person.
 ## License
 
 This software is open source, licensed under the MIT License.
-See [LICENSE](https://github.com/Lambda3/Simple.Bus/blob/master/LICENSE.txt) for details.
+See [LICENSE](https://github.com/Lambda3/Simple.Bus/blob/main/LICENSE.txt) for details.
 Check out the terms of the license before you contribute, fork, copy or do anything
 with the code. If you decide to contribute you agree to grant copyright of all your contribution to this project and agree to
 mention clearly if do not agree to these terms. Your work will be licensed with the project at MIT, along the rest of the code.
